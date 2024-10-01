@@ -13,13 +13,10 @@ The easiest way to get started with Overture data is via the explore page: [expl
    1. Esri ArcMap and QGIS are great options for desktop software.
    2. Most of this workshop can be visualized with [kepler.gl](kepler.gl) if you do not have either of the above software.
 
-!!!
-When launching DuckDB, be sure to specify a persistent DB, such as `duckdb my_db.duckdb`. This way if you create tables, you can access them later.
-!!!
+> When launching DuckDB, be sure to specify a persistent DB, such as `duckdb my_db.duckdb`. This way if you create tables, you can access them later.
 
 ### Resources
 The Overture [documentation website](https://docs.overturemaps.org/) is the primary guide for this workshop. Especially important is the [Data Schema](docs.overturemaps.org/schema).
-
 
 
 ## Part 1. Places
@@ -122,7 +119,7 @@ CREATE OR REPLACE TABLE countries AS (
     WHERE subtype = 'country'
 );
 ```
-This might take some time, but in the end, you should high resolution boundaries from OpenStreetMap for 250+ countries.
+This might take some time, but in the end, you should high resolution boundaries from OpenStreetMap for 234 countries.
 
 If you'd like, create a Country boundary geoparquet file for reference:
 ```sql
@@ -214,3 +211,38 @@ GROUP BY h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(
 ```
 
 ## Part 4: Transportation
+
+```sql
+COPY(
+    SELECT
+       id,
+       names.primary as name,
+       class,
+       geometry
+    FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=transportation/type=segment/*', filename=true, hive_partitioning=1)
+    WHERE bbox.xmin > 2.276
+      AND bbox.ymin > 48.865
+      AND bbox.xmax < 2.314
+      AND bbox.ymax < 48.882
+) TO 'paris_roads.geojson' WITH (FORMAT GDAL, DRIVER 'GeoJSON');
+```
+
+## Part 5: Base
+What is the base theme?
+
+```sql
+SET s3_region='us-west-2';
+
+COPY(
+    SELECT
+       id,
+       names.primary as name,
+       elevation,
+       geometry
+    FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=base/type=land/*', filename=true, hive_partitioning=1)
+    WHERE subtype = 'physical' AND class IN ('peak','volcano') AND elevation IS NOT NULL
+    AND bbox.xmin BETWEEN -124.71 AND -116.47
+    AND bbox.ymin BETWEEN 41.99 AND 46.30
+) TO 'oregon_peaks.geojson'
+WITH (FORMAT GDAL, DRIVER 'GeoJSON');
+```
