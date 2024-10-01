@@ -241,8 +241,20 @@ COPY(
        geometry
     FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=base/type=land/*', filename=true, hive_partitioning=1)
     WHERE subtype = 'physical' AND class IN ('peak','volcano') AND elevation IS NOT NULL
-    AND bbox.xmin BETWEEN -124.71 AND -116.47
-    AND bbox.ymin BETWEEN 41.99 AND 46.30
-) TO 'oregon_peaks.geojson'
-WITH (FORMAT GDAL, DRIVER 'GeoJSON');
+    AND bbox.xmin BETWEEN -12.8 AND 29.7
+    AND bbox.ymin BETWEEN 34.7 AND 58.2
+) TO 'european_peaks.parquet';
+```
+
+
+```sql
+COPY(
+    SELECT
+        h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 6) as h3,
+        max(elevation) as _max,
+        min(elevation) as _min,
+        avg(elevation) as _avg
+FROM read_parquet('european_peaks.parquet')
+GROUP BY h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 6)
+) TO 'peaks_h3.csv';
 ```
