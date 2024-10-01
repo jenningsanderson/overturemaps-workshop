@@ -12,6 +12,7 @@ The easiest way to get started with Overture data is via the explore page: [expl
 2. A GIS environment of your choice.
    1. Esri ArcMap and QGIS are great options for desktop software.
    2. Most of this workshop can be visualized with [kepler.gl](kepler.gl) if you do not have either of the above software.
+3. Optional: If you do not want to install DuckDB locally, you can sign up for MotherDuck, a cloud-based DuckDB.
 
 > When launching DuckDB, be sure to specify a persistent DB, such as `duckdb my_db.duckdb`. This way if you create tables, you can access them later.
 
