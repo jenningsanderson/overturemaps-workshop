@@ -3,43 +3,34 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 
 > Consisting of open data from OpenStreetMap, Meta, Esri, Microsoft, Google, and more, Overture Maps data is conflated and converted to a consistent schema before being distributed as geoparquet files in the cloud. This workshop will explore the advantages of GeoParquet and cloud-native geospatial technologies for researchers working with the data both locally and in the cloud.
 
-
----
-Workshop Agenda
-1. Introduce the Overture explore page <!-- 5 minutes -->
-2. Review Overture schema documentation <!-- 5-10 minutes -->
-3. Set up DuckDB / Mothreduck environment <!-- 10 minutes -->
-4. Get familiar with the query language and environment
----
-
 ### Resources
-- The best place to get started with Overture data is via the explore page: [explore.overturemaps.org](https://explore.overturemaps.org).
 
-- The Overture [documentation website](https://docs.overturemaps.org/) is the primary guide for this workshop. Especially important is the [Data Schema](docs.overturemaps.org/schema).
+| Name | Description |
+| ---- | ----------- |
+| [Overture Explore Page](//explore.overturemaps.org) | Best place to get started looking at Overture data |
+| [Overture Documentation](//docs.overturemaps.org/) | Continuously updating resource with examples of how to access Overture data |
+| [Overture Data Schema](//docs.overturemaps.org/schema/) | The schema-specific subpage of the documentation |
+| [Discussions on Github](https://github.com/OvertureMaps/data/discussions) | We welcome feedback and discussions on Github. |
+| [DuckDB spatial functions](https://duckdb.org/docs/extensions/spatial/functions) | A list of spatial functions available in the DuckDB spatial extension |
+| [DuckDB H3 extension](https://community-extensions.duckdb.org/extensions/h3.html) | Documentation of the DuckDB h3 extension |
 
-- Feedback and discussions on [Overture's Github](https://github.com/OvertureMaps/data/discussions)
+### Workshop Prerequisites:
+_If you do not want to install DuckDB locally, you can sign up for MotherDuck, a cloud-based DuckDB, however, you will not be able to use the `COPY TO` commands nor the `h3` extension._
 
-- DuckDB [spatial functions](https://duckdb.org/docs/extensions/spatial/functions)
-
-- DuckDB [H3 extension](https://community-extensions.duckdb.org/extensions/h3.html)
-
-#### Prerequisite: DuckDB
-1. Install [DuckDB](https://duckdb.org/docs/installation/?version=stable&environment=cli&platform=macos&download_method=package_manager)
-2. A GIS environment of your choice.
-   1. Both QGIS and Esri ArcMap or similar will work
+1. [Install DuckDB](https://duckdb.org/docs/installation/?version=stable&environment=cli&platform=macos&download_method=package_manager) version >= 1.1.1
+2. A GIS environment of your choice:
+   1. Both QGIS and Esri ArcMap or similar should work. To load geoparquet directly into QGIS, you will need a [version of QGIS with the latest GDAL](https://docs.overturemaps.org/examples/QGIS/).
    2. Most of this workshop can be visualized with [kepler.gl](kepler.gl)
-3. Optional: If you do not want to install DuckDB locally, you can sign up for MotherDuck, a cloud-based DuckDB.
 
-> When launching DuckDB, be sure to specify a persistent DB, such as `duckdb my_db.duckdb`s. This way if you create tables, you can access them later.
+
+_**Tip**: When launching DuckDB, specify a persistent DB, such as `duckdb my_db.duckdb`s. This way if you create tables, you can access them later._
 
 
 ## Part 1. Places
 
-#### Step 1: Query for places in Nürnberg: 
+### Step 1: Query for places in a particular location:
 
-1. Construct a query for all of the places in Nürnberg:
-
-1. Obtain a bounding box of interest https://boundingbox.klokantech.com/ is a great tool for creating a bounding box. Here is one for the old city:
+1. Obtain a bounding box of interest https://boundingbox.klokantech.com/ is a great tool for creating a bounding box. Specifically, it lets you copy the coordinates in the following format (DublinCore) which is very human-readable. Here is one for the old city in Nürnberg:
 
     ```python
     west_limit=11.069371
@@ -48,12 +39,15 @@ Workshop Agenda
     north_limit=49.461126
     ```
 
+    (I recommend a smaller bounding box, like just a small city or neighborhood for now so you're not working with a lot of data in the example).
+
 2. A basic places query looks like this:
 
     ```sql
     SELECT
         id,
         names.primary as name,
+        confidence,
         geometry
     FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=places/type=place/*', filename=true, hive_partitioning=1)
     WHERE
@@ -64,8 +58,9 @@ Workshop Agenda
 
     Consult the [places schema](https://docs.overturemaps.org/schema/reference/places/place/) to learn more about which columns can be accessed and their data types.
 
-3. Update the query with the proper values in the WHERE clause for X and Y.
-4. Paste the query into DuckDB and run it.
+3. Update the query with the proper values in the `WHERE` clause for `X` and `Y` from your bounding box. Remember, east/west = longitude = X and north/south = latitude = Y.
+
+4. Paste your query into DuckDB and run it.
 
 You should see something similar to this:
 
@@ -87,249 +82,297 @@ You should see something similar to this:
     │ 10 rows                                                                                           4 columns │
     └─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 
-#### Step 2: Use DuckDB to create common spatial data formats.
+    Notice the type of the geometry column is `geometry`. DuckDB recognizes the geo metadata in the source parquet files and automatically converts the column to a geometry type.
 
-First, ensure the `spatial` extension is installed by running `install spatial;`.
-Next, load the spatial extension by running `load spatial;`
 
-Now we can use our same query again, but this time we add the COPY command to write GeoJSON. We can also remove the `LIMIT` argument.
+### Step 2: Use DuckDB `spatial` extension to convert to common spatial data formats.
 
-```sql
-COPY(
-    { OUR QUERY FROM ABOVE }
-) TO 'old_city_places.geojson' WITH (FORMAT GDAL, DRIVER 'GeoJSON')
-```
+1. Ensure the `spatial` extension is installed:  `install spatial;`.
+2. Load the spatial extension with `load spatial;`
 
-Now open that GeoJSON file in your preferred GIS environment to inspect the attributes (fastest to drag-n-drop into kepler.gl)
+3. Now we can use our same query again, but this time we add the `COPY TO` command to write GeoJSON. We can also remove the `LIMIT` argument.
 
-**Bonus:** How can I just download all of the places data for Germany?
+    ```sql
+    COPY(
+        "< OUR QUERY FROM ABOVE >"
+    ) TO 'old_city_places.geojson' WITH (FORMAT GDAL, DRIVER 'GeoJSON')
+    ```
 
-```sql
-CREATE TABLE germany_places AS (
-    SELECT
-    id,
-    names.primary as name,
-    categories.primary as category,
-    geometry
-FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=places/type=place/*', filename=true, hive_partitioning=1)
-WHERE
-    bbox.xmin BETWEEN 5.87 AND 15.04
-    AND bbox.ymin BETWEEN 47.27 AND 55.1
-)
-```
-Now we can reference places in Germany without pulling any more data from Overture (_faster!_).
+4. Now open that GeoJSON file in your preferred GIS environment to inspect the attributes (fastest to drag-n-drop into kepler.gl)
 
-You can create a parquet file of places to use locally with the `COPY TO` command: 
-```sql
-load spatial;
-COPY( 
-    SELECT
-        id, 
-        name, 
+5. **(Optional):** Download all of the places for a larger region and save them in a table to be accessed later with a `CTAS` command:
+
+    ```sql
+    CREATE TABLE germany_places AS (
+        SELECT
+        id,
+        names.primary as name,
+        categories.primary as category,
         geometry
-    FROM germany_places
-) TO 'germany_places.parquet';
-```
+    FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=places/type=place/*', filename=true, hive_partitioning=1)
+    WHERE
+        bbox.xmin BETWEEN 5.87 AND 15.04
+        AND bbox.ymin BETWEEN 47.27 AND 55.1
+    )
+    ```
 
-This will write a geoparquet file to your computer. Recent versions of QGIS can also read GeoParquet. See [these instructions if you're stuck](https://docs.overturemaps.org/examples/QGIS/).
+    Now we can reference places in Germany without pulling any more data from Overture (_faster!_).
 
-Additionally, you can access this file at any time with `FROM read_parquet('germany.parquet')`
+
+    You can create a parquet file of places to use locally with the `COPY TO` command:
+
+    ```sql
+    load spatial;
+    COPY(
+        SELECT
+            id,
+            name,
+            geometry
+        FROM germany_places
+    ) TO 'germany_bbox_places.parquet';
+    ```
+
+    This will write a geoparquet file to your computer. Recent versions of QGIS can also read GeoParquet. See [these instructions if you're stuck](https://docs.overturemaps.org/examples/QGIS/).
+
+    Additionally, you can access this file at any time with `FROM read_parquet('germany.parquet')`
 
 ## Part 2: Divisions
-Now is a good time to save a Countries table for boundaries to reference later.
 
-```sql
-CREATE OR REPLACE TABLE countries AS (
-    SELECT
+1. Let's create a table with Country boundaries that we can reference later. In Overture, administrative boundaries are known as divisions:
+
+    ```sql
+    CREATE OR REPLACE TABLE countries AS (
+        SELECT
+            names.primary as name,
+            names.common['en'][1] as name_en,
+            names.common['de'][1] as name_de,
+            names.common['fr'][1] as name_fr,
+            geometry AS border
+        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=divisions/type=division_area/*', hive_partitioning=1)
+        WHERE subtype = 'country'
+    );
+    ```
+
+    This might take some time, depending on your internet connection speed, but in the end, you should high resolution boundaries from OpenStreetMap for 234 countries.
+
+2. We can export that file as parquet with the `COPY TO` command again:
+    ```sql
+    COPY(
+        SELECT
+            *,
+        border as geometry
+    FROM countries
+    ) TO 'countries.parquet';
+    ```
+
+    DuckDB Spatial can perform many spatial operations, so we can use it to clip our places data to a more exact bounding box of a country. Remember that these are very high-fidelity country borders, so use the `ST_SIMPLIFY` command to improve performance:
+
+    ```sql
+    load spatial;
+    COPY(
+        SELECT
+            id,
+            name,
+            geometry
+    FROM read_parquet('germany_bbox_places.parquet')
+    WHERE ST_CONTAINS(
+        (
+            SELECT ST_SIMPLIFY(border, 0.01)
+            FROM read_parquet('countries.parquet')
+            WHERE name_en = 'Germany'
+        ),
+        geometry
+        )
+    ) TO 'germany_places.parquet';
+    ```
+
+## Part 3: H3
+We can do spatial analysis with the [h3 grid system](https://h3geo.org/), available in duckdb via the h3 plugin:
+
+1. Install the extension:
+    ```sql
+    install h3 from community;
+    load h3;
+    ```
+
+2. Density of places per h3 cell:
+    ```sql
+    COPY(
+        SELECT
+            h3_latlng_to_cell_string(ST_Y(geometry), ST_X(geometry), 8) as h3,
+            count(1) as _count
+    FROM read_parquet('germany_places.parquet')
+    GROUP BY h3_latlng_to_cell_string(ST_Y(geometry), ST_X(geometry), 8)
+    ) TO 'h3.csv';
+    ```
+
+    Now drag-n-drop h3.csv directly into kepler.gl, which will turn the h3 index into a polygon automatically:
+
+
+3. Just to demonstrate the power of this extension, let's find all of the h3 polyons that cover our country boundarie:
+    ```sql
+    load h3;
+    COPY(
+        SELECT h3_h3_to_string(h3) AS h3,
+        name_en
+        FROM (
+            SELECT name_en,
+                s.geom as geom
+            FROM read_parquet('countries.parquet')
+            CROSS JOIN UNNEST(ST_DUMP(border)) AS t(s)
+        )
+        cross join unnest(h3_polygon_wkt_to_cells(ST_ASTEXT(geom), 4)) as t(h3)
+    ) TO 'h3_countries.csv';
+    ```
+
+    You now have a file that maps h3 cell to Country name that you can join other h3-aggregated data to for per-Country analysis.
+
+
+## Part 4:  Buildings
+
+1. Overture contains more than 2B building footprints. Fetching them all to our local machine is not very valuable. However, we can interact with their metadata in the cloud:
+
+    Overutre data is available both on Amazon S3 and Microsoft Azure Blob Storage. In this example, we'll use the data form Azure:
+
+    ```sql
+    SET azure_storage_connection_string = 'DefaultEndpointsProtocol=https;AccountName=overturemapswestus2;AccountKey=;EndpointSuffix=core.windows.net';
+
+    COPY(
+        SELECT
+            id,
+            names.primary as primary_name,
+            height,
+            sources[1].dataset AS primary_source,
+            sources[1].record_id AS source_id,
+            geometry
+        FROM read_parquet('azure://release/2024-09-18.0/theme=buildings/type=building/*', filename=true, hive_partitioning=1)
+        WHERE bbox.xmin BETWEEN 10.959934 AND 11.211332
+        AND bbox.ymin BETWEEN 49.397337 AND 49.501401
+    ) TO 'buildings.parquet';
+    ```
+
+    Now compute h3 densities for buildings:
+
+    ```sql
+    COPY(
+        SELECT
+            h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 10) as h3,
+            count(1) as _count
+    FROM read_parquet('buildings.parquet')
+    GROUP BY h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 10)
+    ) TO 'buildings_h3.csv';
+    ```
+
+2. What if you wanted to do this for a much larger area? Now we can _really_ leverage Parquet's predicate pushdown to fetch a subset of the building data.
+
+    Since each feature has a `bbox`, we won't use the buildlings actual geometry, but just the bbox.xmin and bbox.ymin. This is a fine proxy for the location of the building.
+
+    By only requesting these columns, we dramatically shrink the amount of data we must download.
+
+    ```sql
+    COPY(
+        SELECT
+            h3_latlng_to_cell_string(bbox.ymin, bbox.xmin, 8) as h3,
+            count(1) as building_count
+    FROM read_parquet('buildings.parquet')
+    WHERE bbox.xmin BETWEEN 5.87 AND 15.04
+        AND bbox.ymin BETWEEN 47.27 AND 55.1
+    GROUP BY h3_latlng_to_cell_string(bbox.ymin, bbox.xmin, 8)
+    ) TO 'building_density_h3_res8.csv';
+    ```
+
+
+## Part 5: Transportation Theme
+The transportation theme has 2 types of data, connectors and segments.
+
+1. Get started by looking at the segments in Paris:
+    ```sql
+    COPY(
+        SELECT
+        id,
         names.primary as name,
-        names.common['en'][1] as name_en,
-        names.common['de'][1] as name_de,
-        geometry AS border
-    FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=divisions/type=division_area/*', hive_partitioning=1)
-    WHERE subtype = 'country' AND names.primary = 'Deutschland'
-);
-```
-This might take some time, but in the end, you should high resolution boundaries from OpenStreetMap for 234 countries.
+        class,
+        geometry
+        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=transportation/type=segment/*', filename=true, hive_partitioning=1)
+        WHERE bbox.xmin > 2.276
+        AND bbox.ymin > 48.865
+        AND bbox.xmax < 2.314
+        AND bbox.ymax < 48.882
+    ) TO 'paris_roads.geojson' WITH (FORMAT GDAL, DRIVER 'GeoJSON');
+    ```
 
-If you'd like, create a Country boundary geoparquet file for reference:
-```sql
-COPY(
-    SELECT
-        *,
-    border as geometry
-FROM countries
-) TO 'countries.parquet';
-```
+2. Connectors make for a good proxy of road density. First we'll download a bunch of connectors to a local table:
 
-```sql
-COPY(
-    SELECT h3_h3_to_string(h3) AS h3,
-    name_en
-    FROM (
-        SELECT name_en,
-               s.geom as geom
-        FROM countries
-        CROSS JOIN UNNEST(ST_DUMP(border)) AS t(s)
-    )
-    cross join unnest(h3_polygon_wkt_to_cells(ST_ASTEXT(geom), 4)) as t(h3)
-) TO 'h3_countries.csv';
-```
+    ```sql
+    load h3;
+    CREATE OR REPLACE TABLE connectors AS (
+        SELECT
+            h3_latlng_to_cell_string(ST_Y(geometry), ST_X(geometry), 8) as h3,
+        id,
+        geometry
+        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=transportation/type=connector/*', filename=true, hive_partitioning=1)
+        WHERE bbox.xmin > 8.82
+        AND bbox.ymin > 48.5
+        AND bbox.xmax < 13.36
+        AND bbox.ymax < 50.39
+    );
+    ```
 
-```sql
-load spatial;
-COPY(
-   SELECT
-   id,
-   name,
-   geometry
-FROM read_parquet('germany_places.parquet')
-WHERE ST_CONTAINS(
-   (SELECT ST_SIMPLIFY(border, 0.1) FROM countries WHERE name_en = 'Germany'),
-   geometry
-   )
-) TO 'germany_places_clipped.parquet';
-```
+3. Now aggregate by h3 cell:
 
-#### Quick spatial analysis with h3
-The [h3 grid system](https://h3geo.org/) is available in duckdb via the h3 plugin:
-```sql
-install h3 from community;
-load h3;
-```
+    ```sql
+    COPY(
+        SELECT
+            h3,
+            count(id)
+        FROM connectors
+        GROUP BY
+            h3
+    ) TO 'connectors_h3.csv';
+    ```
 
-```sql
-COPY(
-    SELECT
-        h3_latlng_to_cell_string(ST_Y(geometry), ST_X(geometry), 8) as h3,
-        count(1) as _count
-FROM read_parquet('germany_places_clipped.parquet')
-GROUP BY h3_latlng_to_cell_string(ST_Y(geometry), ST_X(geometry), 8)
-) TO 'h3.csv';
-```
+## Part 6: Base
+What is the base theme? Consult the documention here: docs.overturemaps.org/guides/base/
 
-Now drag-n-drop this result directly into kepler.gl, which will know the geometry from cell.
+1. Download all of the peaks in Europe:
+    ```sql
+    SET s3_region='us-west-2';
 
+    COPY(
+        SELECT
+            id,
+            names.primary as name,
+            elevation,
+            geometry
+        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=base/type=land/*', filename=true, hive_partitioning=1)
+        WHERE subtype = 'physical'
+            AND class IN ('peak','volcano')
+            AND elevation IS NOT NULL
+            AND bbox.xmin BETWEEN -12.8 AND 29.7
+            AND bbox.ymin BETWEEN 34.7 AND 58.2
+    ) TO 'european_peaks.parquet';
+    ```
 
-## Part 3:  Buildings
-We can also pull the data from Micrsoft Azure Blob storage: 
-```sql
-SET azure_storage_connection_string = 'DefaultEndpointsProtocol=https;AccountName=overturemapswestus2;AccountKey=;EndpointSuffix=core.windows.net';
-
-COPY(
-  SELECT
-    id,
-    names.primary as primary_name,
-    height,
-    sources[1].dataset AS primary_source,
-    sources[1].record_id AS source_id,
-    geometry
-  FROM read_parquet('azure://release/2024-09-18.0/theme=buildings/type=building/*', filename=true, hive_partitioning=1)
-  WHERE bbox.xmin BETWEEN 10.959934 AND 11.211332
-  AND bbox.ymin BETWEEN 49.397337 AND 49.501401
-) TO 'buildings.parquet';
-```
-
-Similarly, we can compute h3 densities for local buildings: 
-
-```sql
-COPY(
-    SELECT
-        h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 10) as h3,
-        count(1) as _count
-FROM read_parquet('buildings.parquet')
-GROUP BY h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 10)
-) TO 'buildings_h3.csv';
-```
-
-## Part 4: Transportation Theme
-The transportation theme has 2 types of data, connectors and segments. We can get started by looking at the segments in Paris:
-
-```sql
-COPY(
-    SELECT
-       id,
-       names.primary as name,
-       class,
-       geometry
-    FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=transportation/type=segment/*', filename=true, hive_partitioning=1)
-    WHERE bbox.xmin > 2.276
-      AND bbox.ymin > 48.865
-      AND bbox.xmax < 2.314
-      AND bbox.ymax < 48.882
-) TO 'paris_roads.geojson' WITH (FORMAT GDAL, DRIVER 'GeoJSON');
-```
-
-Connectors make for a good proxy of road density: 
-```sql
-load h3;
-CREATE OR REPLACE TABLE connectors AS (
-    SELECT
-        h3_latlng_to_cell_string(ST_Y(geometry), ST_X(geometry), 8) as h3,
-       id,
-       geometry
-    FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=transportation/type=connector/*', filename=true, hive_partitioning=1)
-    WHERE bbox.xmin > 8.82
-      AND bbox.ymin > 48.5
-      AND bbox.xmax < 13.36
-      AND bbox.ymax < 50.39
-);
-```
-
-```sql
-COPY(
-SELECT 
-    h3,
-    count(id)
-FROM connectors
-GROUP BY 
-    h3
-) TO 'connectors_h3.csv';
-```
-
-
-
-
-
-## Part 5: Base
-What is the base theme?
-
-```sql
-SET s3_region='us-west-2';
-
-COPY(
-    SELECT
-       id,
-       names.primary as name,
-       elevation,
-       geometry
-    FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=base/type=land/*', filename=true, hive_partitioning=1)
-    WHERE subtype = 'physical' AND class IN ('peak','volcano') AND elevation IS NOT NULL
-    AND bbox.xmin BETWEEN -12.8 AND 29.7
-    AND bbox.ymin BETWEEN 34.7 AND 58.2
-) TO 'european_peaks.parquet';
-```
-
-```sql
-COPY(
-    SELECT
-        h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 6) as h3,
-        max(elevation) as _max,
-        min(elevation) as _min,
-        avg(elevation) as _avg
-FROM read_parquet('european_peaks.parquet')
-GROUP BY h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 6)
-) TO 'peaks_h3.csv';
-```
+2. We can build an h3-gridded DEM for European high points from this file:
+    ```sql
+        COPY(
+            SELECT
+                h3_latlng_to_cell_string(
+                    ST_Y(ST_CENTROID(geometry)),
+                    ST_X(ST_CENTROID(geometry)),
+                6) as h3,
+                max(elevation) as _max,
+                min(elevation) as _min,
+                avg(elevation) as _avg
+        FROM read_parquet('european_peaks.parquet')
+        GROUP BY h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 6)
+        ) TO 'peaks_h3.csv';
+    ```
 
 What other types of features from OSM are you interested in exploring? The logic for how features convert from OSM to Overture is here: https://docs.overturemaps.org/schema/concepts/by-theme/base/
 
 
 ## Next Steps
-Overture keeps a list of projects from the community. Many of these are great tutorials on working with Overture data: 
+Overture keeps a list of projects from the community. Many of these are great tutorials on working with Overture data: https://docs.overturemaps.org/community/.
 
-https://docs.overturemaps.org/community/
-
-
-This blog post uses AI for places data conflation: 
-
-https://www.dbreunig.com/2024/09/27/conflating-overture-points-of-interests-with-duckdb-ollama-and-more.html
+For further inspiration, this blog post uses AI for places data conflation: https://www.dbreunig.com/2024/09/27/conflating-overture-points-of-interests-with-duckdb-ollama-and-more.html
