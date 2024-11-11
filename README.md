@@ -65,37 +65,29 @@ _To update here: can we add a variable that toggles pulling height from either O
 # 3. DuckDB
 [Back to Agenda](#workshop-agenda)
 
-Now that we've played with a bit of Overture data in the browser, let's see how we can work with it locally.
+Now that we've seen Overture data in the browser, let's download some locally with DuckDB.
 
-seen Overture data... Now let's download some Overture data with DuckDB and work with it locally.
+First, [Install DuckDB](https://duckdb.org/docs/installation/?version=stable&environment=cli&platform=macos&download_method=package_manager) version >= 1.1.1
 
+Next, you'll need a A GIS environment of your choice. Both QGIS and Esri ArcMap or similar should work. To load geoparquet directly into QGIS, you will need a [version of QGIS with the latest GDAL](https://docs.overturemaps.org/examples/QGIS/). Alternatively, most of this workshop can be visualized with [kepler.gl](kepler.gl)
 
-
-
-
-### Workshop Prerequisites:
 _If you do not want to install DuckDB locally, you can sign up for MotherDuck, a cloud-based DuckDB, however, you will not be able to use the `COPY TO` commands nor the `h3` extension._
-
-1. [Install DuckDB](https://duckdb.org/docs/installation/?version=stable&environment=cli&platform=macos&download_method=package_manager) version >= 1.1.1
-2. A GIS environment of your choice:
-   1. Both QGIS and Esri ArcMap or similar should work. To load geoparquet directly into QGIS, you will need a [version of QGIS with the latest GDAL](https://docs.overturemaps.org/examples/QGIS/).
-   2. Most of this workshop can be visualized with [kepler.gl](kepler.gl)
-
-
-_**Tip**: When launching DuckDB, specify a persistent DB, such as `duckdb my_db.duckdb`s. This way if you create tables, you can access them later._
 
 
 ## Part 1. Places
 
+_**Tip**: When launching DuckDB, specify a persistent DB, such as `duckdb my_db.duckdb`s. This way if you create tables, you can access them later._
+
+
 ### Step 1: Query for places in a particular location:
 
-1. Obtain a bounding box of interest https://boundingbox.klokantech.com/ is a great tool for creating a bounding box. Specifically, it lets you copy the coordinates in the following format (DublinCore) which is very human-readable. Here is one for the old city in Nürnberg:
+1. Obtain a bounding box of interest https://boundingbox.klokantech.com/ is a great tool for creating a bounding box. Specifically, it lets you copy the coordinates in the following format (DublinCore) which is very human-readable. Here is a bounding box for Montréal:
 
     ```python
-    west_limit=11.069371
-    south_limit=49.451761
-    east_limit=11.090204
-    north_limit=49.461126
+    westlimit=-73.974157
+    southlimit=45.410076
+    eastlimit=-73.474295
+    northlimit=45.70479
     ```
 
     (I recommend a smaller bounding box, like just a small city or neighborhood for now so you're not working with a lot of data in the example).
@@ -108,10 +100,10 @@ _**Tip**: When launching DuckDB, specify a persistent DB, such as `duckdb my_db.
         names.primary as name,
         confidence,
         geometry
-    FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=places/type=place/*', filename=true, hive_partitioning=1)
+    FROM read_parquet('s3://overturemaps-us-west-2/release/2024-10-23.0/theme=places/type=place/*', filename=true, hive_partitioning=1)
     WHERE
-        bbox.xmin BETWEEN X AND X
-        AND bbox.ymin BETWEEN Y AND Y
+        bbox.xmin BETWEEN X_WEST AND X_EAST
+        AND bbox.ymin BETWEEN Y_SOUTH AND Y_NORTH
     LIMIT 10;
     ```
 
@@ -123,25 +115,30 @@ _**Tip**: When launching DuckDB, specify a persistent DB, such as `duckdb my_db.
 
 You should see something similar to this:
 
-    ┌──────────────────────┬─────────────────────────────────┬────────────────────┬───────────────────────────────┐
-    │          id          │              name               │     confidence     │           geometry            │
-    │       varchar        │             varchar             │       double       │           geometry            │
-    ├──────────────────────┼─────────────────────────────────┼────────────────────┼───────────────────────────────┤
-    │ 08f1fabab502179403…  │ Bella Ciao                      │ 0.4907481898632341 │ POINT (11.06968 49.45177)     │
-    │ 08f1fabab502174a03…  │ glore Nuremberg                 │ 0.9504067173970087 │ POINT (11.0699612 49.4518074) │
-    │ 08f1fabab5021d4503…  │ Jimmy Ray's Barber Shop Barber  │ 0.9504067173970087 │ POINT (11.0695916 49.4520211) │
-    │ 08f1fabab502110b03…  │ Beautyshop 24                   │ 0.9573247870456271 │ POINT (11.0696863 49.4519865) │
-    │ 08f1fabab50256da03…  │ Thorsten Staudt Friseursalon    │ 0.9589055910024873 │ POINT (11.0696001 49.452039)  │
-    │ 08f1fabab502120a03…  │ Kaffino                         │ 0.9504067173970087 │ POINT (11.0700699 49.4518776) │
-    │ 08f1fabab5028d6103…  │ Unysono Immobilienkultur        │               0.77 │ POINT (11.0706167 49.4517711) │
-    │ 08f1fabab502cd5c03…  │ Milan Kreitlein                 │ 0.9504067173970087 │ POINT (11.0702838 49.4519829) │
-    │ 08f1fabab502cd5c03…  │ Games Garden Video Game Store…  │ 0.9573247870456271 │ POINT (11.0703253 49.4520171) │
-    │ 08f1fabab502cb8403…  │ Parkhaus Wöhrl                  │               0.77 │ POINT (11.0705119 49.4521137) │
-    ├──────────────────────┴─────────────────────────────────┴────────────────────┴───────────────────────────────┤
-    │ 10 rows                                                                                           4 columns │
-    └─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ┌──────────────────────────────────┬───────────────────────────────────────────┬─────────────────────┬────────────────────────────────┐
+    │                id                │                   name                    │     confidence      │            geometry            │
+    │             varchar              │                  varchar                  │       double        │            geometry            │
+    ├──────────────────────────────────┼───────────────────────────────────────────┼─────────────────────┼────────────────────────────────┤
+    │ 08f2b81b7170b90803a1b4376438169b │ Hôtel de ville de Senneville              │  0.9544565521095278 │ POINT (-73.9600016 45.4136658) │
+    │ 08f2b81b7171c0db037e3818c87b6c02 │ charles rivers                            │ 0.30856423173803527 │ POINT (-73.96118 45.41467)     │
+    │ 08f2b81b714f2a2603f85a7ea76652ac │ Club De Voile Senneville                  │  0.5592783505154639 │ POINT (-73.9685221 45.4187574) │
+    │ 08f2b81b714ad4e5037c634d2494f50e │ Vignoble Souffle de Vie                   │                0.77 │ POINT (-73.9676663 45.4201718) │
+    │ 08f2b81b71583049039f215b4d3b9a7b │ Souffle de Vie Vineyard                   │  0.9567577686259828 │ POINT (-73.9678019 45.4228501) │
+    │ 08f2b81b7158c219034200ed79cfbc13 │ Tenaquip Limited                          │  0.9826508620689655 │ POINT (-73.9657541 45.4229399) │
+    │ 08f2b81b7152e4140398b266e3eab10b │ Cimetière et Complexe Funéraire Belvédère │  0.9797443181818182 │ POINT (-73.9618394 45.4233901) │
+    │ 08f2b81b703aa099031e13858e363b78 │ Les Écuries de Senneville | Senneville QC │  0.9537408699085346 │ POINT (-73.9693036 45.4291791) │
+    │ 08f2b81b700551a2039ae5eda64366c7 │ Ferme GUSH Farm                           │  0.9213349225268176 │ POINT (-73.96907 45.43491)     │
+    │ 08f2b81b70b90148038bf5f719a95574 │ Braeside Golf Club                        │  0.9588815789473685 │ POINT (-73.9626141 45.4377414) │
+    ├──────────────────────────────────┴───────────────────────────────────────────┴─────────────────────┴────────────────────────────────┤
+    │ 10 rows                                                                                                                   4 columns │
+    └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 
-    Notice the type of the geometry column is `geometry`. DuckDB recognizes the geo metadata in the source parquet files and automatically converts the column to a geometry type.
+Notice the type of the geometry column is `geometry`. DuckDB recognizes the geo metadata in the source parquet files and automatically converts the column to a geometry type.
+
+
+Create a local GeoParquet file:
+
+How
 
 
 ### Step 2: Use DuckDB `spatial` extension to convert to common spatial data formats.
