@@ -7,12 +7,71 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 
 | Name | Description |
 | ---- | ----------- |
-| [Overture Explore Page](//explore.overturemaps.org) | Best place to get started looking at Overture data |
-| [Overture Documentation](//docs.overturemaps.org/) | Continuously updating resource with examples of how to access Overture data |
-| [Overture Data Schema](//docs.overturemaps.org/schema/) | The schema-specific subpage of the documentation |
-| [Discussions on Github](https://github.com/OvertureMaps/data/discussions) | We welcome feedback and discussions on Github. |
-| [DuckDB spatial functions](https://duckdb.org/docs/extensions/spatial/functions) | A list of spatial functions available in the DuckDB spatial extension |
-| [DuckDB H3 extension](https://community-extensions.duckdb.org/extensions/h3.html) | Documentation of the DuckDB h3 extension |
+| [Overture Explore Page](//explore.overturemaps.org) | Easiest place to get an overview of Overture data in an X-Ray map view  |
+| [Overture Documentation](//docs.overturemaps.org/) | Schema definitiona nd examples of how to access and work with Overture data.  |
+| [Fused.io](//fused.io) | A new cloud-based GIS with user-defined functions
+| [DuckDB](https://duckdb.org/) | An fast in-process database system for analytics and data manipulation |
+
+
+# Workshop Agenda
+
+1. What is Overture Maps?
+   1. Look at some Overture Data [explore.overturemaps.org](//explore.overturemaps.org)
+
+2. Dig deeper into Overture data with Fused.io
+   1. Explore raw Overture data by theme and type
+   2. _Fuse_ Overture data with an external dataset (National Structures Inventory) to fill in data gaps
+
+3. Interface with Overture data via DuckDB
+
+
+
+
+
+
+
+
+# 1. Overture Maps Foundation
+[Back to Agenda](#workshop-agenda)
+
+The [Overture Maps Foundation](//overturemaps.org) is an open data project within the Linux Foundation that aims "Power current and next-generation map products by creating reliable, easy-to-use, and interoperable open map data."
+
+Primarily, "Overture is for developers who build map services or use geospatial data." However, Overture is a fantastic resource for researchers looking to work with one of the most complete and computationally efficient open geospatial datasets.
+
+
+
+
+# 2. Fused.io
+[Back to Agenda](#workshop-agenda)
+
+### 1. Getting started with Fused: [The Overture Maps Example UDF](https://www.fused.io/workbench/catalog/Overture_Maps_Example-64071fb8-2c96-4015-adb9-596c3bac6787)
+1. In a new browser window, navigate to: [Overture Maps Example](https://www.fused.io/workbench/catalog/Overture_Maps_Example-64071fb8-2c96-4015-adb9-596c3bac6787)
+2. Click "Add to UDF Builder"
+3. On the far left, adjust the parameters to view different types of data from Overture.
+4. Hover over features on the map to see the complete, raw, Overture data.
+5. Zoom all the way out to see the spatial partitioning.
+
+
+### 2. _Fusing_ Datasets with Overture in the browser:
+
+1. [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef)
+
+_To update here: can we add a variable that toggles pulling height from either Overture or NSI?_
+
+
+
+<br /><br /><br /><hr /><br /><br /><br />
+
+# 3. DuckDB
+[Back to Agenda](#workshop-agenda)
+
+Now that we've played with a bit of Overture data in the browser, let's see how we can work with it locally.
+
+seen Overture data... Now let's download some Overture data with DuckDB and work with it locally.
+
+
+
+
 
 ### Workshop Prerequisites:
 _If you do not want to install DuckDB locally, you can sign up for MotherDuck, a cloud-based DuckDB, however, you will not be able to use the `COPY TO` commands nor the `h3` extension._
