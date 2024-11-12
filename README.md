@@ -73,7 +73,7 @@ Next, you'll need a A GIS environment of your choice. Both QGIS and Esri ArcMap 
 
 _If you do not want to install DuckDB locally, you can sign up for MotherDuck, a cloud-based DuckDB, however, you will not be able to use the `COPY TO` commands nor the `h3` extension._
 
-## Part 1. Places Data
+## Part I. Places Theme
 
 _**Tip**: When launching DuckDB, specify a persistent DB, such as `duckdb my_db.duckdb`. This way if you create tables, you can access them later._
 
@@ -164,7 +164,7 @@ Here is a bounding box for Montréal:
 
 
 
-# Part 2:  Buildings
+## Part II: Buildings Theme
 
 1. Overture contains more than 2B building footprints. Fetching them all to our local machine is not very valuable. However, we can interact with their metadata in the cloud:
 
@@ -203,7 +203,7 @@ Here is a bounding box for Montréal:
     ) TO 'buildings_h3.csv';
     ```
 
-## Part 3: Transportation Theme
+## Part III: Transportation Theme
 
 The transportation theme has 2 types of data, connectors and segments.
 
@@ -254,7 +254,45 @@ The transportation theme has 2 types of data, connectors and segments.
     ) TO 'connectors_h3.csv';
     ```
 
+## Part IV: Base Theme
+
+What is the base theme?
+
+1. Query Overture for all of the peaks in Europe:
+    ```sql
+    SET s3_region='us-west-2';
+
+    COPY(
+        SELECT
+        id,
+        names.primary as name,
+        elevation,
+        geometry
+        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-10-23.0/theme=base/type=land/*', filename=true, hive_partitioning=1)
+        WHERE subtype = 'physical' AND class IN ('peak','volcano') AND elevation IS NOT NULL
+        AND bbox.xmin BETWEEN -12.8 AND 29.7
+        AND bbox.ymin BETWEEN 34.7 AND 58.2
+    ) TO 'european_peaks.parquet';
+
+2. We can build an h3-gridded DEM for European high points from this file:
+    ```sql
+    COPY(
+        SELECT
+            h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 6) as h3,
+            max(elevation) as _max,
+            min(elevation) as _min,
+            avg(elevation) as _avg
+    FROM read_parquet('european_peaks.parquet')
+    GROUP BY h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 6)
+    ) TO 'peaks_h3.csv';
+    ```
+
+What is the base theme? Consult the documention here: docs.overturemaps.org/guides/base/
+
+
 What other types of features from OSM are you interested in exploring? The logic for how features convert from OSM to Overture is here: <https://docs.overturemaps.org/schema/concepts/by-theme/base/>
+
+
 
 
 
