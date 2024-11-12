@@ -13,17 +13,24 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 | [DuckDB](https://duckdb.org/) | An fast in-process database system for analytics and data manipulation |
 
 # Workshop Agenda
-
-1. [What is Overture Maps?](#1-what-is-overture-maps)
-   1. Look at some Overture Data [explore.overturemaps.org](//explore.overturemaps.org)
-
-2. Dig deeper into Overture data with Fused.io
-   1. Explore raw Overture data by theme and type
-   2. _Fuse_ Overture data with an external dataset (National Structures Inventory) to fill in data gaps
-
-3. Interface with Overture data via DuckDB
-
-4. [Bring it back to Fused](#4-bring-the-analysis-to-the-data-in-the-cloud)
+- [Querying the Planet: Leveraging GeoParquet to work with global scale open geospatial data locally and in the cloud](#querying-the-planet-leveraging-geoparquet-to-work-with-global-scale-open-geospatial-data-locally-and-in-the-cloud)
+    - [Resources](#resources)
+- [Workshop Agenda](#workshop-agenda)
+- [1. What is Overture Maps?](#1-what-is-overture-maps)
+    - [Explore Overture Data](#explore-overture-data)
+- [2. Fused.io](#2-fusedio)
+    - [1. Getting started with Fused: The Overture Maps Example UDF](#1-getting-started-with-fused-the-overture-maps-example-udf)
+    - [2. _Fusing_ Datasets with Overture in the browser](#2-fusing-datasets-with-overture-in-the-browser)
+- [3. DuckDB](#3-duckdb)
+  - [Part I. Places Theme](#part-i-places-theme)
+    - [Step 1: Query for places in a particular location](#step-1-query-for-places-in-a-particular-location)
+    - [Step 2: Use DuckDB `spatial` extension to convert to common spatial data formats](#step-2-use-duckdb-spatial-extension-to-convert-to-common-spatial-data-formats)
+  - [Part II: Buildings Theme](#part-ii-buildings-theme)
+  - [Part III: Transportation Theme](#part-iii-transportation-theme)
+  - [Part IV: Base Theme](#part-iv-base-theme)
+- [4. Bring the Analysis to the Data in the cloud with Fused](#4-bring-the-analysis-to-the-data-in-the-cloud-with-fused)
+  - [Overture \& Oakridge Comparision](#overture--oakridge-comparision)
+  - [H3 Aggregated Skyline](#h3-aggregated-skyline)
 
 <br /><br /><br /><hr /><br /><br /><br />
 
@@ -304,9 +311,13 @@ What other types of features from OSM are you interested in exploring? The logic
 
 Since our data lives in the cloud, let's bring our analysis to the data, not the other way around.
 
-1. Load the [Overture OakRidge Comparison](https://www.fused.io/workbench/catalog/Overture_OakRidge_Comparison-0ebc66b4-fbd5-4b44-ab97-af6d30757891) into your Fused workbench.
-2. Compare the building footprints between ORNL and Overture. Which one has more accurate building footprints?
-3. Now which dataset has more accurate _class_ information?
-4. Fused lets us combine these datasets.
+## Overture & Oakridge Comparision
 
-5. Additionally, we can perform the same H3 aggregations in the cloud: The [Overture H3 Skyline](https://www.fused.io/workbench/catalog/Overture_H3_Skyline-1b1b240c-f378-4737-856b-18d9568fd8f1) UDF aggregates Overture buildings at any h3 resolution — allowing you to "approximate" a city skyline without having to render all of the buildings.
+   1. Load the [Overture OakRidge Comparison](https://www.fused.io/workbench/catalog/Overture_OakRidge_Comparison-0ebc66b4-fbd5-4b44-ab97-af6d30757891) into your Fused workbench.
+   2. Compare the building footprints between ORNL and Overture. Which one has more accurate building footprints?
+   3. Now which dataset has more accurate _class_ information?
+   4. Fused lets us combine these datasets.
+
+## H3 Aggregated Skyline
+
+   1. Additionally, we can perform the same H3 aggregations in the cloud: The [Overture H3 Skyline](https://www.fused.io/workbench/catalog/Overture_H3_Skyline-1b1b240c-f378-4737-856b-18d9568fd8f1) UDF aggregates Overture buildings at any h3 resolution — allowing you to "approximate" a city skyline without having to render all of the buildings.
