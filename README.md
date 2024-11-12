@@ -15,7 +15,7 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 
 # Workshop Agenda
 
-1. What is Overture Maps?
+1. [What is Overture Maps?](#1-what-is-overture-maps)
    1. Look at some Overture Data [explore.overturemaps.org](//explore.overturemaps.org)
 
 2. Dig deeper into Overture data with Fused.io
@@ -30,16 +30,24 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 
 
 
+<br /><br /><br /><hr /><br /><br /><br />
 
-# 1. Overture Maps Foundation
+# 1. What is Overture Maps?
 [Back to Agenda](#workshop-agenda)
 
 The [Overture Maps Foundation](//overturemaps.org) is an open data project within the Linux Foundation that aims "Power current and next-generation map products by creating reliable, easy-to-use, and interoperable open map data."
 
 Primarily, "Overture is for developers who build map services or use geospatial data." However, Overture is a fantastic resource for researchers looking to work with one of the most complete and computationally efficient open geospatial datasets.
 
+### Explore Overture Data
+
+1. Visit [explore.overturemaps.org](//explore.overturemaps.org) and poke around. This site offers an "x-ray" view of Overture data.
+2. Overture data
 
 
+
+
+<br /><br /><br /><hr /><br /><br /><br />
 
 # 2. Fused.io
 [Back to Agenda](#workshop-agenda)
@@ -54,13 +62,11 @@ Primarily, "Overture is for developers who build map services or use geospatial 
 
 ### 2. _Fusing_ Datasets with Overture in the browser:
 
-1. [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef)
-
-_To update here: can we add a variable that toggles pulling height from either Overture or NSI?_
-
-
+1. Add the [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef) UDF to your fused workbench.
+2. Notice the `join with NSI`  parameter in this UDF. What does this do?
 
 <br /><br /><br /><hr /><br /><br /><br />
+
 
 # 3. DuckDB
 [Back to Agenda](#workshop-agenda)
@@ -138,7 +144,9 @@ Notice the type of the geometry column is `geometry`. DuckDB recognizes the geo 
 
 Create a local GeoParquet file:
 
-How
+
+
+
 
 
 ### Step 2: Use DuckDB `spatial` extension to convert to common spatial data formats.
@@ -432,3 +440,7 @@ What other types of features from OSM are you interested in exploring? The logic
 Overture keeps a list of projects from the community. Many of these are great tutorials on working with Overture data: https://docs.overturemaps.org/community/.
 
 For further inspiration, this blog post uses AI for places data conflation: https://www.dbreunig.com/2024/09/27/conflating-overture-points-of-interests-with-duckdb-ollama-and-more.html
+
+
+
+###
