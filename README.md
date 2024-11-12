@@ -256,6 +256,19 @@ The transportation theme has 2 types of data, connectors and segments.
 
 What other types of features from OSM are you interested in exploring? The logic for how features convert from OSM to Overture is here: <https://docs.overturemaps.org/schema/concepts/by-theme/base/>
 
+
+
+
 <br /><br /><br /><hr /><br /><br /><br />
 
-# 4. Bring the Analysis to the Data in the cloud
+# 4. Bring the Analysis to the Data in the cloud with Fused
+[Back to Agenda](#workshop-agenda)
+
+Since our data lives in the cloud, let's bring our analysis to the data, not the other way around.
+
+1. Load the [Overture OakRidge Comparison](https://www.fused.io/workbench/catalog/Overture_OakRidge_Comparison-0ebc66b4-fbd5-4b44-ab97-af6d30757891) into your Fused workbench.
+2. Compare the building footprints between ORNL and Overture. Which one has more accurate building footprints?
+3. Now which dataset has more accurate _class_ information?
+4. Fused lets us combine these datasets.
+
+5. Additionally, we can perform the same H3 aggregations in the cloud: The [Overture H3 Skyline](https://www.fused.io/workbench/catalog/Overture_H3_Skyline-1b1b240c-f378-4737-856b-18d9568fd8f1) UDF aggregates Overture buildings at any h3 resolution — allowing you to "approximate" a city skyline without having to render all of the buildings.
