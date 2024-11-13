@@ -5,6 +5,8 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 
 ### Resources
 
+#### Live Q&A: https://app.sli.do/event/a3aCipNwUzsQyxAxYGjczD
+
 | Name | Description |
 | ---- | ----------- |
 | [Overture Explore Page](//explore.overturemaps.org) | Easiest place to get an overview of Overture data in an X-Ray map view  |
