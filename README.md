@@ -1,4 +1,4 @@
-<img width="1375" alt="image" src="https://github.com/user-attachments/assets/b45b188b-7712-4502-8ccf-601513fc81f6">Querying the Planet: Leveraging GeoParquet to work with global scale open geospatial data locally and in the cloud
+Querying the Planet: Leveraging GeoParquet to work with global scale open geospatial data locally and in the cloud
 ===
 
 > Consisting of open data from OpenStreetMap, Meta, Esri, Microsoft, Google, and more, Overture Maps data is conflated and converted to a consistent schema before being distributed as geoparquet files in the cloud. This workshop will explore the advantages of GeoParquet and cloud-native geospatial technologies for researchers working with the data both locally and in the cloud.
