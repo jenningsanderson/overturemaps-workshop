@@ -13,6 +13,9 @@
 | [DuckDB](https://duckdb.org/) | An fast in-process database system for analytics and data manipulation |
 
 # Workshop Agenda
+- [Querying the Planet: Leveraging GeoParquet to work with global scale open geospatial data locally and in the cloud](#querying-the-planet-leveraging-geoparquet-to-work-with-global-scale-open-geospatial-data-locally-and-in-the-cloud)
+    - [Resources](#resources)
+- [Workshop Agenda](#workshop-agenda)
 - [1. What is Overture Maps?](#1-what-is-overture-maps)
     - [Explore Overture Data](#explore-overture-data)
 - [2. Fused.io](#2-fusedio)
@@ -48,17 +51,17 @@ Primarily, "Overture is for developers who build map services or use geospatial 
 ### Explore Overture Data
 
 1. Visit [explore.overturemaps.org](//explore.overturemaps.org) and poke around. This site offers an "x-ray" view of Overture data.
-2. Overture has **6** data themes: 
-    - Divisions, 
-    - Base, 
+2. Overture has **6** data themes:
+    - Divisions,
+    - Base,
     - Transportation
     - Buildings
     - Places
     - Addresses.
-   
+
    The explore page lets you inspect the properties of each feature and links out to the overture schema: [docs.overturemaps.org/schema](//docs.overturemaps.org/schema) where you can learn more about the attributes available for each theme.
 
-The explore page helps us get an overview of what's in Overture by rendering pre-processed PMTiles archives on a web map. Next, we'll look at the different ways we can interact with Overture data in the raw, Geoparquet format. 
+The explore page helps us get an overview of what's in Overture by rendering pre-processed PMTiles archives on a web map. Next, we'll look at the different ways we can interact with Overture data in the raw, Geoparquet format.
 
 
 <br /><br /><br /><br /><br /><br />
@@ -69,7 +72,7 @@ The explore page helps us get an overview of what's in Overture by rendering pre
 
 ![image](https://github.com/user-attachments/assets/ff9f8a75-7b9d-4039-89d6-0001ac8c952c)
 
-Fused is a new analytical platform with powerful capabilities to read and visualize geoparquet right in your browser. The Fused workbench allows you to run any number of public User-Defined Functions, or UDFs. 
+Fused is a new analytical platform with powerful capabilities to read and visualize geoparquet right in your browser. The Fused workbench allows you to run any number of public User-Defined Functions, or UDFs.
 
 ### 1. Getting started with Fused: [The Overture Maps Example UDF](https://www.fused.io/workbench/catalog/Overture_Maps_Example-64071fb8-2c96-4015-adb9-596c3bac6787)
 
@@ -86,31 +89,31 @@ Fused is a new analytical platform with powerful capabilities to read and visual
 
 ### 2. _Fusing_ Datasets with Overture in the browser
 
-Now that we've seen what's in Overture data, can we combine (or _fuse_) our Overture data with another dataset? 
+Now that we've seen what's in Overture data, can we combine (or _fuse_) our Overture data with another dataset?
 
 1. Add the [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef) UDF to your fused workbench.
 2. Notice the `join with NSI` parameter in this UDF. Toggle this parameter and have a look around the map at a few different places. For example, here are buildings in Fargo, North Dakota:
 
 <div style="display:block;">
-<img style="width:45%; display:inline-block;" 
+<img style="width:45%; display:inline-block;"
     src="https://github.com/user-attachments/assets/4350628c-5e36-4bab-9938-d1968757d6df" />
-<img style="width:45%; display:inline-block;" 
+<img style="width:45%; display:inline-block;"
     src="https://github.com/user-attachments/assets/86ed00d9-39dd-4869-ab2e-56dca5e7359b">
 </div>
 
-After getting buildings from Overture, this UDF queries the National Structures Inventory for information about the various buildings. The NSI returns point geometries, which are joined to our Overture buildings with a spatial join in GeoPandas: 
+After getting buildings from Overture, this UDF queries the National Structures Inventory for information about the various buildings. The NSI returns point geometries, which are joined to our Overture buildings with a spatial join in GeoPandas:
 
 ```python
 join = gdf_overture.sjoin(gdf, how='left')
 ```
 
-Next, if Overture does not have height information for a given building, we calculate a height based on the number of stories from the NSI. 
+Next, if Overture does not have height information for a given building, we calculate a height based on the number of stories from the NSI.
 
 ```python
 join["metric"] = join.apply(lambda row: row.height if pd.notnull(row.height) else row.num_story*3, axis=1)
 ````
 
-Next, we'll turn to our local machines and look at ways to interact with Overture data from our local environment. 
+Next, we'll turn to our local machines and look at ways to interact with Overture data from our local environment.
 
 
 <br /><br /><br /><br /><br /><br />
@@ -119,7 +122,7 @@ Next, we'll turn to our local machines and look at ways to interact with Overtur
 
 [Back to Agenda](#workshop-agenda)
 
-Since the data is hosted in the cloud as GeoParquet files, we can access it via DuckDB, which can take advantage of this cloud-native format. 
+Since the data is hosted in the cloud as GeoParquet files, we can access it via DuckDB, which can take advantage of this cloud-native format.
 
 First, [Install DuckDB](https://duckdb.org/docs/installation/?version=stable&environment=cli&platform=macos&download_method=package_manager) version >= 1.1.1
 
@@ -223,7 +226,7 @@ Here is a bounding box for Montréal:
 
 ## Part II: Buildings Theme
 
-1. Overture contains more than 2B building footprints. Attempting to download them all to our local machine will be difficult. However, we can extract only a small subset of the buildings with a query: 
+1. Overture contains more than 2B building footprints. Attempting to download them all to our local machine will be difficult. However, we can extract only a small subset of the buildings with a query:
 
     Overutre data is available both on Amazon S3 and Microsoft Azure Blob Storage. In this example, we'll use the data from Azure:
 
@@ -248,9 +251,9 @@ Here is a bounding box for Montréal:
     ) TO 'seattle_buildings.geojson' WITH (FORMAT GDAL, DRIVER GeoJSON);
     ```
 
-    Update that bounding box for anywhere else in the world, and you instantly have a global building database at your finger tips. 
+    Update that bounding box for anywhere else in the world, and you instantly have a global building database at your finger tips.
 
-2. How about some spatial statistics? If we don't want to first download all 566,806 buildings in our Montréal bounding box, we can bring our statistics directly into our query. First, we'll install `h3` extension for spatial aggregation by h3 hexagon. 
+2. How about some spatial statistics? If we don't want to first download all 566,806 buildings in our Montréal bounding box, we can bring our statistics directly into our query. First, we'll install `h3` extension for spatial aggregation by h3 hexagon.
 
     ```sql
     INSTALL h3 FROM community;
@@ -290,10 +293,10 @@ The transportation theme has 2 types of data, connectors and segments.
             AND bbox.ymax < 48.882
     ) TO 'paris_roads.geojson' WITH (FORMAT GDAL, DRIVER 'GeoJSON');
     ```
-    Looks very similar to what we were seeing on the Explore map, but this time we're working with the raw data: 
+    Looks very similar to what we were seeing on the Explore map, but this time we're working with the raw data:
 
     ![image](https://github.com/user-attachments/assets/0e5ee740-843b-4e13-a386-df02404f4fa5)
-    
+
 
 2. Connectors are a decent proxy of road network complexity and density. First we'll download a bunch of connectors to a local parquet file:
 
@@ -332,9 +335,10 @@ The transportation theme has 2 types of data, connectors and segments.
 
 ## Part IV: Base Theme
 
-What is the **base** theme? Mostly landuse, infrastructure, and water features from OpenStreetMap that have been converted into a rigic schema depending on their initial tag values. For example: 
+What is the **base** theme? Mostly landuse, infrastructure, and water features from OpenStreetMap that have been converted into a rigic schema depending on their initial tag values. For example:
 
 1. Query Overture for all of the mountain peaks in North America:
+
     ```sql
     SET s3_region='us-west-2';
 
@@ -349,12 +353,13 @@ What is the **base** theme? Mostly landuse, infrastructure, and water features f
         AND bbox.xmin BETWEEN -175 AND -48
         AND bbox.ymin BETWEEN 10 AND 85
     ) TO 'north_american_peaks.parquet';
+    ```
 
     This query downloads about 1.1M peaks and the distribution looks like this:
     ![image](https://github.com/user-attachments/assets/0f81dea8-1051-4912-bacb-82be16835c26)
 
 
-2. We can build an h3-gridded DEM for North American high points from this file: 
+2. We can build an h3-gridded DEM for North American high points from this file:
     ```sql
     COPY(
         SELECT
