@@ -32,7 +32,7 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
   - [Overture \& Oakridge Comparision](#overture--oakridge-comparision)
   - [H3 Aggregated Skyline](#h3-aggregated-skyline)
 
-<br /><br /><br /><hr /><br /><br /><br />
+<br /><br /><br /><hr><br /><br /><br />
 
 # 1. What is Overture Maps?
 
@@ -47,7 +47,7 @@ Primarily, "Overture is for developers who build map services or use geospatial 
 1. Visit [explore.overturemaps.org](//explore.overturemaps.org) and poke around. This site offers an "x-ray" view of Overture data.
 2. Overture data
 
-<br /><br /><br /><hr /><br /><br /><br />
+<br /><br /><br /><hr><br /><br /><br />
 
 # 2. Fused.io
 
@@ -66,7 +66,7 @@ Primarily, "Overture is for developers who build map services or use geospatial 
 1. Add the [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef) UDF to your fused workbench.
 2. Notice the `join with NSI`  parameter in this UDF. What does this do?
 
-<br /><br /><br /><hr /><br /><br /><br />
+<br /><br /><br /><hr><br /><br /><br />
 
 # 3. DuckDB
 
@@ -304,7 +304,7 @@ What other types of features from OSM are you interested in exploring? The logic
 
 
 
-<br /><br /><br /><hr /><br /><br /><br />
+<br /><br /><br /><hr><br /><br /><br />
 
 # 4. Bring the Analysis to the Data in the cloud with Fused
 [Back to Agenda](#workshop-agenda)
