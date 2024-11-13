@@ -223,9 +223,9 @@ Here is a bounding box for Montréal:
 
 ## Part II: Buildings Theme
 
-Overture contains more than 2B building footprints. See the [buildings data guide](https://docs.overturemaps.org/guides/buildings/#14/32.58453/-117.05154/0/60) for more information on how Overture constructs the buildings theme. Attempting to download them all to our local machine will be difficult. However, we can extract only a small subset of the buildings with a query:
+1. Overture contains more than 2B building footprints. See the [buildings data guide](https://docs.overturemaps.org/guides/buildings/#14/32.58453/-117.05154/0/60) for more information on how Overture constructs the buildings theme. Attempting to download them all to our local machine will be difficult. However, we can extract only a small subset of the buildings with a query:
 
-    Overutre data is available both on Amazon S3 and Microsoft Azure Blob Storage. In this example, we'll use the data from Azure:
+    Overture data is available both on Amazon S3 and Microsoft Azure Blob Storage. In this example, we'll use the data from Azure:
 
     ```sql
     INSTALL azure;
