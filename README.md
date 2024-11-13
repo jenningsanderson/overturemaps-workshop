@@ -8,7 +8,7 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 | Name | Description |
 | ---- | ----------- |
 | [Overture Explore Page](//explore.overturemaps.org) | Easiest place to get an overview of Overture data in an X-Ray map view  |
-| [Overture Documentation](//docs.overturemaps.org/) | Schema definitiona nd examples of how to access and work with Overture data  |
+| [Overture Documentation](//docs.overturemaps.org/) | Schema definition and examples of how to access and work with Overture data  |
 | [Fused.io](//fused.io) | A new cloud-based analytics platform with User Defined Functions
 | [DuckDB](https://duckdb.org/) | An fast in-process database system for analytics and data manipulation |
 
@@ -223,7 +223,7 @@ Here is a bounding box for Montréal:
 
 ## Part II: Buildings Theme
 
-1. Overture contains more than 2B building footprints. Attempting to download them all to our local machine will be difficult. However, we can extract only a small subset of the buildings with a query:
+Overture contains more than 2B building footprints. See the [buildings data guide](https://docs.overturemaps.org/guides/buildings/#14/32.58453/-117.05154/0/60) for more information on how Overture constructs the buildings theme. Attempting to download them all to our local machine will be difficult. However, we can extract only a small subset of the buildings with a query:
 
     Overutre data is available both on Amazon S3 and Microsoft Azure Blob Storage. In this example, we'll use the data from Azure:
 
@@ -250,7 +250,7 @@ Here is a bounding box for Montréal:
 
     Update that bounding box for anywhere else in the world, and you instantly have a global building database at your finger tips.
 
-2. How about some spatial statistics? If we don't want to first download all 566,806 buildings in our Montréal bounding box, we can bring our statistics directly into our query. First, we'll install `h3` extension for spatial aggregation by h3 hexagon.
+4. How about some spatial statistics? If we don't want to first download all 566,806 buildings in our Montréal bounding box, we can bring our statistics directly into our query. First, we'll install `h3` extension for spatial aggregation by h3 hexagon.
 
     ```sql
     INSTALL h3 FROM community;
