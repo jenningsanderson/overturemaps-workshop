@@ -91,7 +91,7 @@ Now that we've seen what's in Overture data, can we combine (or _fuse_) our Over
 1. Add the [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef) UDF to your fused workbench.
 2. Notice the `join with NSI` parameter in this UDF. Toggle this parameter and have a look around the map at a few different places. For example, here are buildings in Fargo, North Dakota:
 
-<div>
+<div style='clear:both;'>
 <img style='float:left;' 
     src="https://github.com/user-attachments/assets/4350628c-5e36-4bab-9938-d1968757d6df" />
 <img style='float:right;' 
@@ -113,7 +113,7 @@ join["metric"] = join.apply(lambda row: row.height if pd.notnull(row.height) els
 Next, we'll turn to our local machines and look at ways to interact with Overture data from our local environment. 
 
 
-<br /><br /><br /><hr><br /><br /><br />
+<br /><br /><br /><br /><br /><br />
 
 # 3. DuckDB
 
@@ -212,9 +212,12 @@ Here is a bounding box for Montréal:
     ) TO 'montreal.geojson' WITH (FORMAT GDAL, DRIVER GeoJSON);
     ```
 
-4. Now open that GeoJSON file in your preferred GIS environment to inspect the attributes (I recommend dragging-and-dropping the result directly into [kepler.gl](//kepler.gl) for fast visualization) 
+4. Now open that GeoJSON file in your preferred GIS environment to inspect the attributes (I recommend dragging-and-dropping the result directly into [kepler.gl](//kepler.gl) for fast visualization)
 
-5. Are there other columns that would be useful? Try adding `categories.primary as category,` to the query to get the category for each place.
+   ![image](https://github.com/user-attachments/assets/11e357f7-0abd-4717-8bd2-2e7af5f082cf)
+
+
+6. Are there other columns that would be useful? Try adding `categories.primary as category,` to the query to get the category for each place.
 
 
 
