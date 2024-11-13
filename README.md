@@ -13,9 +13,6 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 | [DuckDB](https://duckdb.org/) | An fast in-process database system for analytics and data manipulation |
 
 # Workshop Agenda
-- [Querying the Planet: Leveraging GeoParquet to work with global scale open geospatial data locally and in the cloud](#querying-the-planet-leveraging-geoparquet-to-work-with-global-scale-open-geospatial-data-locally-and-in-the-cloud)
-    - [Resources](#resources)
-- [Workshop Agenda](#workshop-agenda)
 - [1. What is Overture Maps?](#1-what-is-overture-maps)
     - [Explore Overture Data](#explore-overture-data)
 - [2. Fused.io](#2-fusedio)
@@ -32,7 +29,8 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
   - [Overture \& Oakridge Comparision](#overture--oakridge-comparision)
   - [H3 Aggregated Skyline](#h3-aggregated-skyline)
 
-w<br /><br /><br /><br /><br /><br />
+
+<br /><br /><br /><br /><br /><br />
 
 # 1. What is Overture Maps?
 
@@ -42,7 +40,7 @@ w<br /><br /><br /><br /><br /><br />
 
 The [Overture Maps Foundation](//overturemaps.org) is an open data project within the Linux Foundation that aims to "Power current and next-generation map products by creating reliable, easy-to-use, and interoperable open map data."
 
-Primarily, "Overture is for developers who build map services or use geospatial data." However, Overture is a fantastic resource for researchers looking to work with one of the most complete and computationally efficient open geospatial datasets.
+Primarily, "Overture is for developers who build map services or use geospatial data." Additionally, Overture is a fantastic resource for researchers looking to work with one of the most complete and computationally efficient open geospatial datasets.
 
 ![image](https://github.com/user-attachments/assets/c80345b7-e0d8-471d-9f03-af6979ef9645)
 
@@ -50,7 +48,7 @@ Primarily, "Overture is for developers who build map services or use geospatial 
 ### Explore Overture Data
 
 1. Visit [explore.overturemaps.org](//explore.overturemaps.org) and poke around. This site offers an "x-ray" view of Overture data.
-2. Overture data
+2. Overture has **6** data themes: Divisions, Base, Transportation, Buildings, Places, & Addresses. The explore page lets you inspect the properties of each feature and links out to the overture schema: [docs.overturemaps.org/schema](//docs.overturemaps.org/schema) where you can learn more about the attributes available for each theme.
 
 <br /><br /><br /><br /><br /><br />
 
