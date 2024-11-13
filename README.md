@@ -91,12 +91,23 @@ Now that we've seen what's in Overture data, can we combine (or _fuse_) our Over
 1. Add the [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef) UDF to your fused workbench.
 2. Notice the `join with NSI` parameter in this UDF.
 
-Fargo, North  Dakota: 
+Buildings in Fargo, North  Dakota: 
+
 ![image](https://github.com/user-attachments/assets/4350628c-5e36-4bab-9938-d1968757d6df)
 
 ![image](https://github.com/user-attachments/assets/86ed00d9-39dd-4869-ab2e-56dca5e7359b)
 
+After getting buildings from Overture, this UDF queries the National Structures Inventory for information about the various buildings. The NSI returns point geometries, which are joined to our Overture buildings with a spatial join in GeoPandas: 
 
+```python
+join = gdf_overture.sjoin(gdf, how='left')
+```
+
+Next, if Overture does not have height information for a given building, we calculate a height based on the number of stories from the NSI. 
+
+```python
+join["metric"] = join.apply(lambda row: row.height if pd.notnull(row.height) else row.num_story*3, axis=1)
+````
 
 
 <br /><br /><br /><hr><br /><br /><br />
