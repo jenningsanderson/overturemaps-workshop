@@ -223,7 +223,7 @@ Here is a bounding box for Montréal:
 
 ## Part II: Buildings Theme
 
-1. Overture contains more than 2B building footprints. Fetching them all to our local machine is not very valuable. However, we can interact with their metadata in the cloud:
+1. Overture contains more than 2B building footprints. Attempting to download them all to our local machine will be difficult. However, we can extract only a small subset of the buildings with a query: 
 
     Overutre data is available both on Amazon S3 and Microsoft Azure Blob Storage. In this example, we'll use the data from Azure:
 
@@ -248,54 +248,68 @@ Here is a bounding box for Montréal:
     ) TO 'seattle_buildings.geojson' WITH (FORMAT GDAL, DRIVER GeoJSON);
     ```
 
-2. Use DuckDB's h3 extension to calculate building densities for a larger area:
+    Update that bounding box for anywhere else in the world, and you instantly have a global building database at your finger tips. 
+
+2. How about some spatial statistics? If we don't want to first download all 566,806 buildings in our Montréal bounding box, we can bring our statistics directly into our query. First, we'll install `h3` extension for spatial aggregation by h3 hexagon. 
 
     ```sql
+    INSTALL h3 FROM community;
+    LOAD h3;
     COPY(
         SELECT
             h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 10) as h3,
             count(1) as _count
-    FROM read_parquet('buildings.parquet')
+        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-10-23.0/theme=buildings/type=building/*', filename=true, hive_partitioning=1)
+            WHERE bbox.xmin BETWEEN -73.974157 AND -73.474295
+            AND bbox.ymin BETWEEN 45.410076 AND 45.70479
     GROUP BY h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 10)
-    ) TO 'buildings_h3.csv';
+    ) TO 'montreal_buildings_h3.csv';
     ```
+
+    Load that image into Kepler.gl, and we have building densities by h3 resolution 10 cell across Montreal.
+   ![image](https://github.com/user-attachments/assets/cca2cf2d-0b0e-4178-b4b4-d6b8dac7f58b)
+
 
 ## Part III: Transportation Theme
 
 The transportation theme has 2 types of data, connectors and segments.
 
-1. Get started by looking at the segments in Paris:
+1. Let's start by looking at the segments in Paris:
 
     ```sql
     COPY(
         SELECT
-        id,
-        names.primary as name,
-        class,
-        geometry
-        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=transportation/type=segment/*', filename=true, hive_partitioning=1)
+            id,
+            names.primary as name,
+            class,
+            geometry
+        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-10-23.0/theme=transportation/type=segment/*', filename=true, hive_partitioning=1)
         WHERE bbox.xmin > 2.276
-        AND bbox.ymin > 48.865
-        AND bbox.xmax < 2.314
-        AND bbox.ymax < 48.882
+            AND bbox.ymin > 48.865
+            AND bbox.xmax < 2.314
+            AND bbox.ymax < 48.882
     ) TO 'paris_roads.geojson' WITH (FORMAT GDAL, DRIVER 'GeoJSON');
     ```
+    Looks very similar to what we were seeing on the Explore map, but this time we're working with the raw data: 
 
-2. Connectors make for a good proxy of road density. First we'll download a bunch of connectors to a local table:
+    ![image](https://github.com/user-attachments/assets/0e5ee740-843b-4e13-a386-df02404f4fa5)
+    
+
+2. Connectors are a decent proxy of road network complexity and density. First we'll download a bunch of connectors to a local parquet file:
 
     ```sql
-    load h3;
-    CREATE OR REPLACE TABLE connectors AS (
+    LOAD h3;
+    COPY(
         SELECT
             h3_latlng_to_cell_string(ST_Y(geometry), ST_X(geometry), 8) as h3,
         id,
         geometry
-        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-09-18.0/theme=transportation/type=connector/*', filename=true, hive_partitioning=1)
+        FROM read_parquet('s3://overturemaps-us-west-2/release/2024-10-23.0/theme=transportation/type=connector/*', filename=true, hive_partitioning=1)
         WHERE bbox.xmin > 8.82
         AND bbox.ymin > 48.5
         AND bbox.xmax < 13.36
         AND bbox.ymax < 50.39
-    );
+    ) TO connectors.parquet;
     ```
 
 3. Now aggregate by h3 cell:
@@ -305,11 +319,16 @@ The transportation theme has 2 types of data, connectors and segments.
         SELECT
             h3,
             count(id)
-        FROM connectors
+        FROM connectors.parquet
         GROUP BY
             h3
     ) TO 'connectors_h3.csv';
     ```
+
+   Bring that CSV into Kepler.gl again, and we have a nice visualization of road network density in Germany:
+   ![image](https://github.com/user-attachments/assets/fe162b53-b3e9-4005-a91e-ff8e977fa217)
+
+
 
 ## Part IV: Base Theme
 
