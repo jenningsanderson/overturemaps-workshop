@@ -391,4 +391,6 @@ Now that we've worked with the data locally, let's go back to the cloud. Since o
 
 ## H3 Aggregated Skyline
 
-   1. Additionally, we can perform the same H3 aggregations in the cloud: The [Overture H3 Skyline](https://www.fused.io/workbench/catalog/Overture_H3_Skyline-1b1b240c-f378-4737-856b-18d9568fd8f1) UDF aggregates Overture buildings at any h3 resolution — allowing you to "approximate" a city skyline without having to render all of the buildings.
+![image](https://github.com/user-attachments/assets/12d8c651-98e1-4082-b9f8-e5bad7825af8)
+
+   1. We can also perform the same H3 aggregations in Fused: The [Overture H3 Skyline](https://www.fused.io/workbench/catalog/Overture_H3_Skyline-1b1b240c-f378-4737-856b-18d9568fd8f1) UDF aggregates Overture buildings at any h3 resolution — allowing you to "approximate" a city skyline without having to render all of the buildings.
