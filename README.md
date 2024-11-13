@@ -8,8 +8,8 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 | Name | Description |
 | ---- | ----------- |
 | [Overture Explore Page](//explore.overturemaps.org) | Easiest place to get an overview of Overture data in an X-Ray map view  |
-| [Overture Documentation](//docs.overturemaps.org/) | Schema definitiona nd examples of how to access and work with Overture data.  |
-| [Fused.io](//fused.io) | A new cloud-based GIS with user-defined functions
+| [Overture Documentation](//docs.overturemaps.org/) | Schema definitiona nd examples of how to access and work with Overture data  |
+| [Fused.io](//fused.io) | A new cloud-based analytics platform with User Defined Functions
 | [DuckDB](https://duckdb.org/) | An fast in-process database system for analytics and data manipulation |
 
 # Workshop Agenda
@@ -51,14 +51,14 @@ Primarily, "Overture is for developers who build map services or use geospatial 
 ### Explore Overture Data
 
 1. Visit [explore.overturemaps.org](//explore.overturemaps.org) and poke around. This site offers an "x-ray" view of Overture data.
-2. Overture has **6** data themes:
-    - Divisions,
-    - Base,
+2. Overture has **6** data themes: 
+    - Divisions
+    - Base
     - Transportation
     - Buildings
     - Places
-    - Addresses.
-
+    - Addresses
+   
    The explore page lets you inspect the properties of each feature and links out to the overture schema: [docs.overturemaps.org/schema](//docs.overturemaps.org/schema) where you can learn more about the attributes available for each theme.
 
 The explore page helps us get an overview of what's in Overture by rendering pre-processed PMTiles archives on a web map. Next, we'll look at the different ways we can interact with Overture data in the raw, Geoparquet format.
@@ -72,14 +72,14 @@ The explore page helps us get an overview of what's in Overture by rendering pre
 
 ![image](https://github.com/user-attachments/assets/ff9f8a75-7b9d-4039-89d6-0001ac8c952c)
 
-Fused is a new analytical platform with powerful capabilities to read and visualize geoparquet right in your browser. The Fused workbench allows you to run any number of public User-Defined Functions, or UDFs.
+Fused is a new analytical platform with powerful capabilities to read and visualize geoparquet right in your browser. The Fused workbench allows you to run any number of public [User Defined Functions](https://docs.fused.io/core-concepts/write/), or UDFs. 
 
 ### 1. Getting started with Fused: [The Overture Maps Example UDF](https://www.fused.io/workbench/catalog/Overture_Maps_Example-64071fb8-2c96-4015-adb9-596c3bac6787)
 
 ![image](https://github.com/user-attachments/assets/2978542d-186a-4950-b09e-75f1b131b7a5)
 
-1. In a new browser window, navigate to: [Overture Maps Example](https://www.fused.io/workbench/catalog/Overture_Maps_Example-64071fb8-2c96-4015-adb9-596c3bac6787)
-2. Click "Add to UDF Builder"
+1. In a new browser window, navigate to: [Overture Maps Example](https://www.fused.io/workbench/catalog/Overture_Maps_Example-64071fb8-2c96-4015-adb9-596c3bac6787).
+2. Click "Add to UDF Builder".
 3. On the far left, adjust the parameters to view different types of data from Overture.
 4. Hover over features on the map to see the complete, raw, Overture data.
 5. Zoom all the way out to see the spatial partitioning:
@@ -194,7 +194,7 @@ Here is a bounding box for Montréal:
 ### Step 2: Use DuckDB `spatial` extension to convert to common spatial data formats
 
 1. Ensure the `spatial` extension is installed:  `install spatial;`.
-2. Load the spatial extension with `load spatial;`
+2. Load the spatial extension with `load spatial;`.
 
 3. Now we can use our same query again, but this time we add the `COPY TO` command to write GeoJSON. We can also remove the `LIMIT` argument. The complete query looks like this:
 
@@ -215,7 +215,7 @@ Here is a bounding box for Montréal:
     ) TO 'montreal.geojson' WITH (FORMAT GDAL, DRIVER GeoJSON);
     ```
 
-4. Now open that GeoJSON file in your preferred GIS environment to inspect the attributes (I recommend dragging-and-dropping the result directly into [kepler.gl](//kepler.gl) for fast visualization)
+4. Now open that GeoJSON file in your preferred GIS environment to inspect the attributes (I recommend dragging-and-dropping the result directly into [kepler.gl](//kepler.gl) for fast visualization.)
 
    ![image](https://github.com/user-attachments/assets/11e357f7-0abd-4717-8bd2-2e7af5f082cf)
 
@@ -390,7 +390,7 @@ Now that we've worked with the data locally, let's go back to the cloud. Since o
 ![image](https://github.com/user-attachments/assets/5e97e2f2-118d-49c4-a444-d59463d0d0f2)
 
    1. Load the [Overture OakRidge Comparison](https://www.fused.io/workbench/catalog/Overture_OakRidge_Comparison-0ebc66b4-fbd5-4b44-ab97-af6d30757891) into your Fused workbench.
-   2. Compare the building footprints between ORNL and Overture. Which one has more accurate building footprints?
+   2. Compare the building footprints between (Oak Ridge National Lab) ORNL and Overture. Which one has more accurate building footprints?
    3. Now which dataset has more accurate _class_ information?
    4. Fused lets us combine these datasets, taking the best footprints from Overture and rich class information from ORNL.
 
