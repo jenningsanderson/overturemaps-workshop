@@ -28,3 +28,6 @@ complete.gpkg
 buildings_h3.csv
 buildings.parquet
 .DS_Store
+*.parquet
+*.csv
+*.geojson
