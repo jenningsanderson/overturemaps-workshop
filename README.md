@@ -382,10 +382,12 @@ Now that we've worked with the data locally, let's go back to the cloud. Since o
 
 ## Overture & Oakridge Comparision
 
+![image](https://github.com/user-attachments/assets/5e97e2f2-118d-49c4-a444-d59463d0d0f2)
+
    1. Load the [Overture OakRidge Comparison](https://www.fused.io/workbench/catalog/Overture_OakRidge_Comparison-0ebc66b4-fbd5-4b44-ab97-af6d30757891) into your Fused workbench.
    2. Compare the building footprints between ORNL and Overture. Which one has more accurate building footprints?
    3. Now which dataset has more accurate _class_ information?
-   4. Fused lets us combine these datasets.
+   4. Fused lets us combine these datasets, taking the best footprints from Overture and rich class information from ORNL.
 
 ## H3 Aggregated Skyline
 
