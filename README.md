@@ -332,9 +332,9 @@ The transportation theme has 2 types of data, connectors and segments.
 
 ## Part IV: Base Theme
 
-What is the base theme?
+What is the **base** theme? Mostly landuse, infrastructure, and water features from OpenStreetMap that have been converted into a rigic schema depending on their initial tag values. For example: 
 
-1. Query Overture for all of the peaks in Europe:
+1. Query Overture for all of the mountain peaks in North America:
     ```sql
     SET s3_region='us-west-2';
 
@@ -346,11 +346,15 @@ What is the base theme?
         geometry
         FROM read_parquet('s3://overturemaps-us-west-2/release/2024-10-23.0/theme=base/type=land/*', filename=true, hive_partitioning=1)
         WHERE subtype = 'physical' AND class IN ('peak','volcano') AND elevation IS NOT NULL
-        AND bbox.xmin BETWEEN -12.8 AND 29.7
-        AND bbox.ymin BETWEEN 34.7 AND 58.2
-    ) TO 'european_peaks.parquet';
+        AND bbox.xmin BETWEEN -175 AND -48
+        AND bbox.ymin BETWEEN 10 AND 85
+    ) TO 'north_american_peaks.parquet';
 
-2. We can build an h3-gridded DEM for European high points from this file:
+    This query downloads about 1.1M peaks and the distribution looks like this:
+    ![image](https://github.com/user-attachments/assets/0f81dea8-1051-4912-bacb-82be16835c26)
+
+
+2. We can build an h3-gridded DEM for North American high points from this file: 
     ```sql
     COPY(
         SELECT
@@ -358,27 +362,23 @@ What is the base theme?
             max(elevation) as _max,
             min(elevation) as _min,
             avg(elevation) as _avg
-    FROM read_parquet('european_peaks.parquet')
+    FROM north_american_peaks.parquet
     GROUP BY h3_latlng_to_cell_string(ST_Y(ST_CENTROID(geometry)), ST_X(ST_CENTROID(geometry)), 6)
-    ) TO 'peaks_h3.csv';
+    ) TO 'na_peaks_h3.csv';
     ```
 
-What is the base theme? Consult the documention here: docs.overturemaps.org/guides/base/
+    ![image](https://github.com/user-attachments/assets/ce1fb971-9097-4533-a43b-7909b8f8f8fb)
 
 
 What other types of features from OSM are you interested in exploring? The logic for how features convert from OSM to Overture is here: <https://docs.overturemaps.org/schema/concepts/by-theme/base/>
 
 
-
-
-
-
-<br /><br /><br /><hr><br /><br /><br />
+<br /><br /><br /><br /><br /><br />
 
 # 4. Bring the Analysis to the Data in the cloud with Fused
 [Back to Agenda](#workshop-agenda)
 
-Since our data lives in the cloud, let's bring our analysis to the data, not the other way around.
+Now that we've worked with the data locally, let's go back to the cloud. Since our data lives there, let's bring our analysis to the data, not the other way around.
 
 ## Overture & Oakridge Comparision
 
