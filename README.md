@@ -89,13 +89,14 @@ Fused is a new analytical platform with powerful capabilities to read and visual
 Now that we've seen what's in Overture data, can we combine (or _fuse_) our Overture data with another dataset? 
 
 1. Add the [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef) UDF to your fused workbench.
-2. Notice the `join with NSI` parameter in this UDF.
+2. Notice the `join with NSI` parameter in this UDF. Toggle this parameter and have a look around the map at a few different places. For example, here are buildings in Fargo, North Dakota:
 
-Buildings in Fargo, North  Dakota: 
-
-![image](https://github.com/user-attachments/assets/4350628c-5e36-4bab-9938-d1968757d6df)
-
-![image](https://github.com/user-attachments/assets/86ed00d9-39dd-4869-ab2e-56dca5e7359b)
+<div>
+<img style='float:left;' 
+    src="https://github.com/user-attachments/assets/4350628c-5e36-4bab-9938-d1968757d6df" />
+<img style='float:right;' 
+    src="https://github.com/user-attachments/assets/86ed00d9-39dd-4869-ab2e-56dca5e7359b">
+</div>
 
 After getting buildings from Overture, this UDF queries the National Structures Inventory for information about the various buildings. The NSI returns point geometries, which are joined to our Overture buildings with a spatial join in GeoPandas: 
 
@@ -109,6 +110,8 @@ Next, if Overture does not have height information for a given building, we calc
 join["metric"] = join.apply(lambda row: row.height if pd.notnull(row.height) else row.num_story*3, axis=1)
 ````
 
+Next, we'll turn to our local machines and look at ways to interact with Overture data from our local environment. 
+
 
 <br /><br /><br /><hr><br /><br /><br />
 
@@ -116,7 +119,7 @@ join["metric"] = join.apply(lambda row: row.height if pd.notnull(row.height) els
 
 [Back to Agenda](#workshop-agenda)
 
-Now that we've seen Overture data in the browser, let's dig in further. Since the data is hosted in the cloud as GeoParquet files, we will interface with it via a tool called DuckDB that can take advantage of this cloud-native format.
+Since the data is hosted in the cloud as GeoParquet files, we can access it via DuckDB, which can take advantage of this cloud-native format. 
 
 First, [Install DuckDB](https://duckdb.org/docs/installation/?version=stable&environment=cli&platform=macos&download_method=package_manager) version >= 1.1.1
 
@@ -209,7 +212,7 @@ Here is a bounding box for Montréal:
     ) TO 'montreal.geojson' WITH (FORMAT GDAL, DRIVER GeoJSON);
     ```
 
-4. Now open that GeoJSON file in your preferred GIS environment to inspect the attributes (fastest to drag-n-drop into kepler.gl)
+4. Now open that GeoJSON file in your preferred GIS environment to inspect the attributes (I recommend dragging-and-dropping the result directly into [kepler.gl](//kepler.gl) for fast visualization) 
 
 5. Are there other columns that would be useful? Try adding `categories.primary as category,` to the query to get the category for each place.
 
