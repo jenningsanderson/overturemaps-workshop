@@ -5,7 +5,7 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 
 ### Resources
 
-#### Live Q&A: https://app.sli.do/event/a3aCipNwUzsQyxAxYGjczD
+#### Live Q&A: [https://app.sli.do/event/a3aCipNwUzsQyxAxYGjczD](https://app.sli.do/event/a3aCipNwUzsQyxAxYGjczD)
 
 | Name | Description |
 | ---- | ----------- |
