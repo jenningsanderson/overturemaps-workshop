@@ -51,14 +51,14 @@ Primarily, "Overture is for developers who build map services or use geospatial 
 ### Explore Overture Data
 
 1. Visit [explore.overturemaps.org](//explore.overturemaps.org) and poke around. This site offers an "x-ray" view of Overture data.
-2. Overture has **6** data themes: 
+2. Overture has **6** data themes:
     - Divisions
     - Base
     - Transportation
     - Buildings
     - Places
     - Addresses
-   
+
    The explore page lets you inspect the properties of each feature and links out to the overture schema: [docs.overturemaps.org/schema](//docs.overturemaps.org/schema) where you can learn more about the attributes available for each theme.
 
 The explore page helps us get an overview of what's in Overture by rendering pre-processed PMTiles archives on a web map. Next, we'll look at the different ways we can interact with Overture data in the raw, Geoparquet format.
@@ -72,7 +72,7 @@ The explore page helps us get an overview of what's in Overture by rendering pre
 
 ![image](https://github.com/user-attachments/assets/ff9f8a75-7b9d-4039-89d6-0001ac8c952c)
 
-Fused is a new analytical platform with powerful capabilities to read and visualize geoparquet right in your browser. The Fused workbench allows you to run any number of public [User Defined Functions](https://docs.fused.io/core-concepts/write/), or UDFs. 
+Fused is a new analytical platform with powerful capabilities to read and visualize geoparquet right in your browser. The Fused workbench allows you to run any number of public [User Defined Functions](https://docs.fused.io/core-concepts/write/), or UDFs.
 
 ### 1. Getting started with Fused: [The Overture Maps Example UDF](https://www.fused.io/workbench/catalog/Overture_Maps_Example-64071fb8-2c96-4015-adb9-596c3bac6787)
 
