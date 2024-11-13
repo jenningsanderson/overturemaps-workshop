@@ -32,22 +32,27 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
   - [Overture \& Oakridge Comparision](#overture--oakridge-comparision)
   - [H3 Aggregated Skyline](#h3-aggregated-skyline)
 
-<br /><br /><br /><hr><br /><br /><br />
+w<br /><br /><br /><br /><br /><br />
 
 # 1. What is Overture Maps?
 
 [Back to Agenda](#workshop-agenda)
 
-The [Overture Maps Foundation](//overturemaps.org) is an open data project within the Linux Foundation that aims "Power current and next-generation map products by creating reliable, easy-to-use, and interoperable open map data."
+![image](https://github.com/user-attachments/assets/9100d3ee-beb9-479c-a257-ef87502cbe1e)
+
+The [Overture Maps Foundation](//overturemaps.org) is an open data project within the Linux Foundation that aims to "Power current and next-generation map products by creating reliable, easy-to-use, and interoperable open map data."
 
 Primarily, "Overture is for developers who build map services or use geospatial data." However, Overture is a fantastic resource for researchers looking to work with one of the most complete and computationally efficient open geospatial datasets.
+
+![image](https://github.com/user-attachments/assets/c80345b7-e0d8-471d-9f03-af6979ef9645)
+
 
 ### Explore Overture Data
 
 1. Visit [explore.overturemaps.org](//explore.overturemaps.org) and poke around. This site offers an "x-ray" view of Overture data.
 2. Overture data
 
-<br /><br /><br /><hr><br /><br /><br />
+<br /><br /><br /><br /><br /><br />
 
 # 2. Fused.io
 
