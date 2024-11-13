@@ -1,4 +1,4 @@
-Querying the Planet: Leveraging GeoParquet to work with global scale open geospatial data locally and in the cloud
+<img width="1375" alt="image" src="https://github.com/user-attachments/assets/b45b188b-7712-4502-8ccf-601513fc81f6">Querying the Planet: Leveraging GeoParquet to work with global scale open geospatial data locally and in the cloud
 ===
 
 > Consisting of open data from OpenStreetMap, Meta, Esri, Microsoft, Google, and more, Overture Maps data is conflated and converted to a consistent schema before being distributed as geoparquet files in the cloud. This workshop will explore the advantages of GeoParquet and cloud-native geospatial technologies for researchers working with the data both locally and in the cloud.
@@ -48,7 +48,18 @@ Primarily, "Overture is for developers who build map services or use geospatial 
 ### Explore Overture Data
 
 1. Visit [explore.overturemaps.org](//explore.overturemaps.org) and poke around. This site offers an "x-ray" view of Overture data.
-2. Overture has **6** data themes: Divisions, Base, Transportation, Buildings, Places, & Addresses. The explore page lets you inspect the properties of each feature and links out to the overture schema: [docs.overturemaps.org/schema](//docs.overturemaps.org/schema) where you can learn more about the attributes available for each theme.
+2. Overture has **6** data themes: 
+    - Divisions, 
+    - Base, 
+    - Transportation
+    - Buildings
+    - Places
+    - Addresses.
+   
+   The explore page lets you inspect the properties of each feature and links out to the overture schema: [docs.overturemaps.org/schema](//docs.overturemaps.org/schema) where you can learn more about the attributes available for each theme.
+
+The explore page helps us get an overview of what's in Overture by rendering pre-processed PMTiles archives on a web map. Next, we'll look at the different ways we can interact with Overture data in the raw, Geoparquet format. 
+
 
 <br /><br /><br /><br /><br /><br />
 
@@ -56,18 +67,37 @@ Primarily, "Overture is for developers who build map services or use geospatial 
 
 [Back to Agenda](#workshop-agenda)
 
+![image](https://github.com/user-attachments/assets/ff9f8a75-7b9d-4039-89d6-0001ac8c952c)
+
+Fused is a new analytical platform with powerful capabilities to read and visualize geoparquet right in your browser. The Fused workbench allows you to run any number of public User-Defined Functions, or UDFs. 
+
 ### 1. Getting started with Fused: [The Overture Maps Example UDF](https://www.fused.io/workbench/catalog/Overture_Maps_Example-64071fb8-2c96-4015-adb9-596c3bac6787)
+
+![image](https://github.com/user-attachments/assets/2978542d-186a-4950-b09e-75f1b131b7a5)
 
 1. In a new browser window, navigate to: [Overture Maps Example](https://www.fused.io/workbench/catalog/Overture_Maps_Example-64071fb8-2c96-4015-adb9-596c3bac6787)
 2. Click "Add to UDF Builder"
 3. On the far left, adjust the parameters to view different types of data from Overture.
 4. Hover over features on the map to see the complete, raw, Overture data.
-5. Zoom all the way out to see the spatial partitioning.
+5. Zoom all the way out to see the spatial partitioning:
+
+    ![image](https://github.com/user-attachments/assets/6baf7efd-cad8-4881-ae9a-6fe4c91699fe)
+
 
 ### 2. _Fusing_ Datasets with Overture in the browser
 
+Now that we've seen what's in Overture data, can we combine (or _fuse_) our Overture data with another dataset? 
+
 1. Add the [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef) UDF to your fused workbench.
-2. Notice the `join with NSI`  parameter in this UDF. What does this do?
+2. Notice the `join with NSI` parameter in this UDF.
+
+Fargo, North  Dakota: 
+![image](https://github.com/user-attachments/assets/4350628c-5e36-4bab-9938-d1968757d6df)
+
+![image](https://github.com/user-attachments/assets/86ed00d9-39dd-4869-ab2e-56dca5e7359b)
+
+
+
 
 <br /><br /><br /><hr><br /><br /><br />
 
