@@ -13,9 +13,6 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
 | [DuckDB](https://duckdb.org/) | An fast in-process database system for analytics and data manipulation |
 
 # Workshop Agenda
-- [Querying the Planet: Leveraging GeoParquet to work with global scale open geospatial data locally and in the cloud](#querying-the-planet-leveraging-geoparquet-to-work-with-global-scale-open-geospatial-data-locally-and-in-the-cloud)
-    - [Resources](#resources)
-- [Workshop Agenda](#workshop-agenda)
 - [1. What is Overture Maps?](#1-what-is-overture-maps)
     - [Explore Overture Data](#explore-overture-data)
 - [2. Fused.io](#2-fusedio)
@@ -29,7 +26,7 @@ Querying the Planet: Leveraging GeoParquet to work with global scale open geospa
   - [Part III: Transportation Theme](#part-iii-transportation-theme)
   - [Part IV: Base Theme](#part-iv-base-theme)
 - [4. Bring the Analysis to the Data in the cloud with Fused](#4-bring-the-analysis-to-the-data-in-the-cloud-with-fused)
-  - [Overture \& Oakridge Comparision](#overture--oakridge-comparision)
+  - [Overture & Oakridge Comparision](#overture--oakridge-comparision)
   - [H3 Aggregated Skyline](#h3-aggregated-skyline)
 
 
