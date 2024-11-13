@@ -91,10 +91,10 @@ Now that we've seen what's in Overture data, can we combine (or _fuse_) our Over
 1. Add the [Overture Nsi](https://www.fused.io/workbench/catalog/Overture_Nsi-dd89972c-ce30-4544-ba0f-81fc09f5bbef) UDF to your fused workbench.
 2. Notice the `join with NSI` parameter in this UDF. Toggle this parameter and have a look around the map at a few different places. For example, here are buildings in Fargo, North Dakota:
 
-<div style='clear:both;'>
-<img style='float:left;' 
+<div style="display:block;">
+<img style="width:45%; display:inline-block;" 
     src="https://github.com/user-attachments/assets/4350628c-5e36-4bab-9938-d1968757d6df" />
-<img style='float:right;' 
+<img style="width:45%; display:inline-block;" 
     src="https://github.com/user-attachments/assets/86ed00d9-39dd-4869-ab2e-56dca5e7359b">
 </div>
 
