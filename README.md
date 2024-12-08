@@ -136,13 +136,13 @@ _**Tip**: When launching DuckDB, specify a persistent DB, such as `duckdb my_db.
 ### Step 1: Query for places in a particular location
 
 1. Obtain a bounding box of interest (<https://boundingbox.klokantech.com>) is a great tool for creating a bounding box. Specifically, it lets you copy the coordinates in the following format (DublinCore) which is very human-readable.
-Here is a bounding box for Montréal:
+Here is a bounding box for Belém:
 
     ```python
-    westlimit=-73.974157
-    southlimit=45.410076
-    eastlimit=-73.474295
-    northlimit=45.70479
+    westlimit=-48.510183; 
+    southlimit=-1.481205; 
+    eastlimit=-48.387434; 
+    northlimit=-1.385577
     ```
 
     (I recommend a smaller bounding box, like just a small city or neighborhood for now so you're not working with a lot of data in the example).
